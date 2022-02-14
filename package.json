@@ -11,7 +11,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack serve --open --config webpack.dev.js",
+    "dev": "webpack serve --open --env dev=true --config webpack.dev.js",
     "build:prod": "webpack --config webpack.prod.js",
     "build": "webpack --config webpack.dev.js"
   },

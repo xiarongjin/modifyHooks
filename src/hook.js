@@ -1,4 +1,4 @@
-import "./detail/index.styl";
+import "./index.styl";
 export const hooks = async () => {
   const detail = document.querySelector("#detail");
   let fileHandler;
@@ -12,29 +12,6 @@ export const hooks = async () => {
     // Close the file and write the contents to disk.
     await writable.close();
   };
-
-  // 浏览器自带弹窗方案
-  // var detail = await prompt("请输入要替换的文案", beforeText);
-  // if (detail) {
-  //   console.log(detail);
-  //   const pickOpt = {
-  //     types: [
-  //       {
-  //         description: "pug",
-  //         accept: {
-  //           "src/*": [".pug"],
-  //         },
-  //       },
-  //     ],
-  //     excludeAcceptAllOption: true,
-  //     multiple: false,
-  //   };
-  //   [fileHandler] = await window.showOpenFilePicker(pickOpt);
-  //   console.log("2");
-  //   const file = await fileHandler.getFile();
-  //   const contents = await file.text();
-  //   await writeFile(fileHandler, contents.replace(beforeText, detail));
-  // }
 
   // 自定义弹窗组件
   const getModal = async (beforeText, cb) => {
@@ -79,7 +56,10 @@ export const hooks = async () => {
   detail.onclick = async (e) => {
     let idStr = e.currentTarget.id;
     let beforeText = e.target.innerText;
-    console.log("当前文案所在模块 id 为：" + idStr);
+    if (e.target.children.length > 0) return;
+    // alert("请点击需要更换文案的位置！");
+
+    console.log("当前文案所在模块 id 为：" + idStr, beforeText);
     await getModal(beforeText, filePick);
   };
 };
