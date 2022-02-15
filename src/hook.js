@@ -1,6 +1,6 @@
 import "./index.styl";
 export const hooks = async () => {
-  const detail = document.querySelector("#detail");
+  const main = document.querySelectorAll("[file-name]");
   let fileHandler;
 
   // 浏览器写入文件
@@ -13,22 +13,28 @@ export const hooks = async () => {
     await writable.close();
   };
 
+  let inputDiv, submit;
+
   // 自定义弹窗组件
   const getModal = async (beforeText, cb) => {
-    const inputDiv = document.createElement("div");
-    const submit = document.createElement("button");
-    submit.innerText = "提交";
-    const input = document.createElement("input");
-    input.id = "input";
-    inputDiv.style.cssText =
-      "position:absolute; top:20px; left:10%;display:flex";
+    if (!inputDiv) {
+      inputDiv = document.createElement("div");
+      submit = document.createElement("button");
+      submit.innerText = "提交";
+      const input = document.createElement("input");
+      input.id = "input";
+      inputDiv.style.cssText =
+        "position:fixed; top:20px; left:10%;display:flex";
+      inputDiv.appendChild(input);
+      inputDiv.appendChild(submit);
+      document.body.appendChild(inputDiv);
+    }
     input.value = beforeText;
-    inputDiv.appendChild(input);
-    inputDiv.appendChild(submit);
-    document.body.appendChild(inputDiv);
+
     submit.onclick = async () => {
       await cb(beforeText, input.value);
       document.body.removeChild(inputDiv);
+      inputDic = null;
     };
   };
 
@@ -53,13 +59,17 @@ export const hooks = async () => {
     await writeFile(fileHandler, contents.replace(beforeText, value));
   };
 
-  detail.onclick = async (e) => {
-    let idStr = e.currentTarget.id;
-    let beforeText = e.target.innerText;
-    if (e.target.children.length > 0) return;
-    // alert("请点击需要更换文案的位置！");
-
-    console.log("当前文案所在模块 id 为：" + idStr, beforeText);
-    await getModal(beforeText, filePick);
-  };
+  for (let i = 0; i < main.length; i++) {
+    main[i].onclick = async (e) => {
+      let idStr = e.currentTarget.getAttribute("file-name");
+      let beforeText = e.target.innerText;
+      if (e.target.children.length > 0) return;
+      // alert("请点击需要更换文案的位置！");
+      console.log(
+        "当前文案所在文件为：" + idStr,
+        "\n当前所选文案为：" + beforeText
+      );
+      await getModal(beforeText, filePick);
+    };
+  }
 };
